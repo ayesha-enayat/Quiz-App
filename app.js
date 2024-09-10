@@ -1,3 +1,5 @@
+//questions array
+
 var questions = [
     {
         question: "What does HTML stand for?",
@@ -41,29 +43,41 @@ var questions = [
     }
 ];
 
+
+//Initialize index =0
 var index = 0;
+
+//Intialize score =0
 var result = 0;
 
+
+//Dynamic renderQuestion Function
 function renderQuestion() {
     if (index > 0) {
         var options = document.getElementsByName("option");
+
         for (var i = 0; i < options.length; i++) {
             if (options[i].checked && options[i].value === questions[index - 1].ans) {
                 result++;
             }
+
         }
     }
 
+//Display Result
     if (index >= questions.length) {
-        document.getElementById("container").innerHTML = "<p>Final Score: " + result + "/" + questions.length + "</p>";
+        calResult();
         return;
     }
 
     var container = document.getElementById("container");
-    container.innerHTML = ` 
-    <div class="card" style="width: 400px;">
-        <div class="card-body p-3">
+    container.innerHTML = `  
+    <div class="card" id="card">
+    <div class="card-header text-center" id="cardHeader">Quiz App</div>
+        <div class="card-body p-3" id="cardBody">
+          <div id="result"></div>
             <p>${index + 1}. ${questions[index].question}</p>
+          
             <div>
                 <label for="option1">
                     <input type="radio" id="option1" name="option" value="${questions[index].opt1}">${questions[index].opt1}</label>
@@ -82,19 +96,83 @@ function renderQuestion() {
             </div>
             <div class="d-flex justify-content-between">
                 <button id="prev" class="btn btn-primary" onClick="prevQuestion()">Previous</button>
-                <button id="next" class="btn btn-success" onClick="renderQuestion()">Next</button>
+                <button id="next" class="btn btn-success" onClick="nextQuestion()">Next</button>
             </div>
         </div>
-    </div>`;
+    </div>
+   `;
 
-    index++;
+    // Show/Hide "Previous" button based on the current question
+    document.getElementById("prev").style.display = index === 0 ? "none" : "block";
 }
 
+
+
+//Previous Question function
 function prevQuestion() {
-    if (index > 1) {
-        index -= 2; // Go back two steps to load the previous question
+    if (index > 0) {
+        index--;        // Go back one step to load the previous question
         renderQuestion();
     }
 }
+
+
+//Next Question Function
+function nextQuestion() {
+    var options = document.getElementsByName("option");
+    var isOptionSelected = false;
+
+    // Check if any option is selected
+    for (var i = 0; i < options.length; i++) {
+        if (options[i].checked) {
+            isOptionSelected = true;
+            break;
+        }
+    }
+
+    // If no option is selected, display an alert message
+    if (!isOptionSelected) {
+        Swal.fire({
+
+            title: "please select an option before moving to the next question!",
+            showClass: {
+              popup: `
+                animate__animated
+                animate__fadeInUp
+                animate__faster
+              `
+            },
+            hideClass: {
+              popup: `
+                animate__animated
+                animate__fadeOutDown
+                animate__faster
+              `
+            }
+          });
+        return; // Prevent moving to the next question
+    }
+
+    if (index < questions.length) {
+        index++;
+        renderQuestion(); // Move to the next question
+    }
+}
+
+
+//Calculate Result function
+function calResult() {
+    var percentage = (result / questions.length) * 100;
+    document.getElementById("cardHeader").innerHTML = "Your Result";
+    if (percentage > 70 && percentage <= 100) {
+        document.getElementById("cardBody").innerHTML = "<p>Your Scrore is " + result + "/" + questions.length + "<br>" + "You passed the quiz with a score of " + percentage + "%" + "</p>";
+    }
+    else if (percentage < 70 && percentage >= 0) {
+        document.getElementById("cardBody").innerHTML = "<p>Your Scrore is " + result + "/" + questions.length + "<br>" + "You failed the quiz with a score of " + percentage + "%" + "</p>";
+    }
+}
+
+
+
 
 renderQuestion();
