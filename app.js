@@ -132,24 +132,7 @@ function nextQuestion() {
 
     // If no option is selected, display an alert message
     if (!isOptionSelected) {
-        Swal.fire({
-
-            title: "please select an option before moving to the next question!",
-            showClass: {
-              popup: `
-                animate__animated
-                animate__fadeInUp
-                animate__faster
-              `
-            },
-            hideClass: {
-              popup: `
-                animate__animated
-                animate__fadeOutDown
-                animate__faster
-              `
-            }
-          });
+        alert("Please select an option before moving to the next question");
         return; // Prevent moving to the next question
     }
 
