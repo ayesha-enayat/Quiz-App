@@ -65,7 +65,7 @@ function renderQuestion() {
     }
 
 //Display Result
-    if (index >= questions.length) {
+    if (!questions[index]) {
         calResult();
         return;
     }
